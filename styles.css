@@ -85,7 +85,8 @@ iframe {
   animation: spin 900ms linear infinite;
 }
 
-.empty-state {
+.empty-state,
+.blocked-state {
   position: absolute;
   inset: 0;
   display: grid;
@@ -96,17 +97,20 @@ iframe {
   background: #0f151b;
 }
 
-.empty-state[hidden] {
+.empty-state[hidden],
+.blocked-state[hidden] {
   display: none;
 }
 
-.empty-state h1 {
+.empty-state h1,
+.blocked-state h1 {
   margin: 0;
   font-size: 34px;
   font-weight: 700;
 }
 
-.empty-state p {
+.empty-state p,
+.blocked-state p {
   margin: 0;
   color: var(--muted);
   font-size: 18px;

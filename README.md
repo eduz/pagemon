@@ -17,6 +17,7 @@ Edite `sites.json`:
     {
       "name": "Servico B",
       "url": "https://status2.exemplo.com/",
+      "embed": false,
       "durationSeconds": 60
     }
   ]
@@ -24,6 +25,7 @@ Edite `sites.json`:
 ```
 
 `durationSeconds` e opcional. Se nao for informado, o tempo padrao e 60 segundos.
+Use `"embed": false` quando o site bloquear exibicao dentro de `iframe`.
 
 ## Como executar
 

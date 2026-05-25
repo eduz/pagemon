@@ -13,6 +13,8 @@
   var loading = document.getElementById("loading");
   var loadingText = document.getElementById("loadingText");
   var emptyState = document.getElementById("emptyState");
+  var blockedState = document.getElementById("blockedState");
+  var blockedUrl = document.getElementById("blockedUrl");
   var siteName = document.getElementById("siteName");
   var siteUrl = document.getElementById("siteUrl");
   var counter = document.getElementById("counter");
@@ -37,6 +39,7 @@
         return {
           name: site.name || site.title || "Site " + (index + 1),
           url: site.url.trim(),
+          embed: site.embed !== false,
           durationSeconds: duration > 5 ? Math.floor(duration) : DEFAULT_DURATION_SECONDS
         };
       });
@@ -79,6 +82,8 @@
     var site = sites[currentIndex];
     secondsLeft = site.durationSeconds;
 
+    emptyState.hidden = true;
+    blockedState.hidden = true;
     setLoading(true, "Carregando");
     updateStatus(site);
 
@@ -87,6 +92,15 @@
     }
 
     frame.removeAttribute("src");
+
+    if (!site.embed) {
+      blockedUrl.textContent = site.url;
+      blockedState.hidden = false;
+      setLoading(false);
+      startCountdown();
+      return;
+    }
+
     loadFallbackTimer = window.setTimeout(function () {
       setLoading(false);
     }, 8000);
@@ -97,6 +111,7 @@
 
   function showEmptyState() {
     emptyState.hidden = false;
+    blockedState.hidden = true;
     frame.removeAttribute("src");
     setLoading(false);
     siteName.textContent = "TV Monitor";

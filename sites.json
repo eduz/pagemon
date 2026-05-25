@@ -8,6 +8,7 @@
     {
       "name": "ONRCPN",
       "url": "https://status.registrocivil.org.br/status/onrcpn",
+      "embed": false,
       "durationSeconds": 60
     }
   ]
