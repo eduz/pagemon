@@ -1,0 +1,14 @@
+{
+  "sites": [
+    {
+      "name": "Apps Confia",
+      "url": "https://kuma.ops.confia.net.br/status/apps",
+      "durationSeconds": 60
+    },
+    {
+      "name": "ONRCPN",
+      "url": "https://status.registrocivil.org.br/status/onrcpn",
+      "durationSeconds": 60
+    }
+  ]
+}

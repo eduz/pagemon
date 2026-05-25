@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0b1014">
+    <title>TV Monitor</title>
+    <link rel="stylesheet" href="styles.css?v=1">
+  </head>
+  <body>
+    <main class="screen">
+      <section class="viewer" aria-label="Monitor de paginas">
+        <iframe
+          id="siteFrame"
+          title="Pagina monitorada"
+          referrerpolicy="no-referrer"
+          sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts">
+        </iframe>
+
+        <div class="loading" id="loading" aria-live="polite">
+          <span class="spinner" aria-hidden="true"></span>
+          <span id="loadingText">Carregando</span>
+        </div>
+
+        <div class="empty-state" id="emptyState" hidden>
+          <h1>Nenhum site configurado</h1>
+          <p>Edite o arquivo sites.json para iniciar o monitoramento.</p>
+        </div>
+      </section>
+
+      <aside class="statusbar" aria-label="Status da rotacao">
+        <div class="service">
+          <strong id="siteName">TV Monitor</strong>
+          <span id="siteUrl">Aguardando sites.json</span>
+        </div>
+
+        <div class="rotation">
+          <span id="counter">0/0</span>
+          <span class="dot" aria-hidden="true"></span>
+          <span id="timer">60s</span>
+          <button type="button" id="previousButton" aria-label="Site anterior" title="Site anterior">
+            <span aria-hidden="true">‹</span>
+          </button>
+          <button type="button" id="nextButton" aria-label="Proximo site" title="Proximo site">
+            <span aria-hidden="true">›</span>
+          </button>
+        </div>
+      </aside>
+    </main>
+
+    <script src="app.js?v=1"></script>
+  </body>
+</html>
