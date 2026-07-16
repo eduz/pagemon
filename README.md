@@ -54,6 +54,7 @@ O monitor tenta manter a TV ativa com tres tecnicas:
 - `Screen Wake Lock API`, quando o navegador suporta.
 - MP3 silencioso curto em loop.
 - Video MP4 preto e minúsculo em loop.
+- Iframe minúsculo do YouTube com autoplay, configurado em `sites.json`.
 
 Arquivos publicados junto com o projeto:
 
@@ -72,6 +73,17 @@ Eles ficam embutidos na propria aplicacao:
 <video id="keepAliveVideo" autoplay loop muted playsinline preload="auto">
   <source src="https://eduz.github.io/pagemon/assets/keepalive.mp4" type="video/mp4">
 </video>
+```
+
+Para trocar o video do YouTube usado como keep-alive, edite `sites.json`:
+
+```json
+{
+  "keepAlive": {
+    "youtubeUrl": "https://www.youtube.com/watch?v=wid7PEVrgRU&list=RDwid7PEVrgRU&start_radio=1"
+  },
+  "sites": []
+}
 ```
 
 Se o navegador da TV bloquear autoplay, tente iniciar a pagina uma vez com interacao do controle remoto. Alguns modelos de TV ainda podem ignorar essas tecnicas no navegador comum; nesse caso, a solucao confiavel e ajustar as configuracoes da TV ou usar um app/kiosk dedicado.

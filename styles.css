@@ -31,14 +31,20 @@ iframe {
 }
 
 #keepAliveAudio,
-#keepAliveVideo {
+#keepAliveVideo,
+#youtubeKeepAliveFrame {
   position: fixed;
   left: -20px;
   top: -20px;
   width: 1px;
   height: 1px;
+  border: 0;
   opacity: 0.01;
   pointer-events: none;
+}
+
+#youtubeKeepAliveFrame.is-disabled {
+  display: none;
 }
 
 .screen {

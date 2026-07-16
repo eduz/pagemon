@@ -23,7 +23,71 @@
   var nextButton = document.getElementById("nextButton");
   var keepAliveAudio = document.getElementById("keepAliveAudio");
   var keepAliveVideo = document.getElementById("keepAliveVideo");
+  var youtubeKeepAliveFrame = document.getElementById("youtubeKeepAliveFrame");
   var wakeLock = null;
+
+  function getYouTubeVideoId(url) {
+    var match = String(url || "").match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([^?&/]+)/);
+    return match ? match[1] : "";
+  }
+
+  function addUrlParameter(url, key, value) {
+    var separator = url.indexOf("?") === -1 ? "?" : "&";
+    var pattern = new RegExp("([?&])" + key + "=");
+
+    if (pattern.test(url)) {
+      return url;
+    }
+
+    return url + separator + encodeURIComponent(key) + "=" + encodeURIComponent(value);
+  }
+
+  function buildYouTubeEmbedUrl(url) {
+    var videoId = getYouTubeVideoId(url);
+    var embedUrl = String(url || "").trim();
+
+    if (!embedUrl) {
+      return "";
+    }
+
+    if (videoId && embedUrl.indexOf("/embed/") === -1) {
+      embedUrl = "https://www.youtube.com/embed/" + videoId;
+    }
+
+    embedUrl = addUrlParameter(embedUrl, "autoplay", "1");
+    embedUrl = addUrlParameter(embedUrl, "mute", "1");
+    embedUrl = addUrlParameter(embedUrl, "loop", "1");
+    embedUrl = addUrlParameter(embedUrl, "controls", "0");
+    embedUrl = addUrlParameter(embedUrl, "playsinline", "1");
+    embedUrl = addUrlParameter(embedUrl, "disablekb", "1");
+    embedUrl = addUrlParameter(embedUrl, "modestbranding", "1");
+
+    if (videoId) {
+      embedUrl = addUrlParameter(embedUrl, "playlist", videoId);
+    }
+
+    return embedUrl;
+  }
+
+  function configureYouTubeKeepAlive(config) {
+    var keepAlive = config && config.keepAlive ? config.keepAlive : {};
+    var embedUrl = buildYouTubeEmbedUrl(keepAlive.youtubeUrl || keepAlive.youtubeEmbedUrl || "");
+
+    if (!youtubeKeepAliveFrame || !embedUrl) {
+      if (youtubeKeepAliveFrame) {
+        youtubeKeepAliveFrame.className = "is-disabled";
+        youtubeKeepAliveFrame.removeAttribute("src");
+      }
+
+      return;
+    }
+
+    youtubeKeepAliveFrame.className = "";
+
+    if (youtubeKeepAliveFrame.src !== embedUrl) {
+      youtubeKeepAliveFrame.src = embedUrl;
+    }
+  }
 
   function playMediaElement(element, volume) {
     if (!element || typeof element.play !== "function") {
@@ -198,6 +262,7 @@
       try {
         var config = JSON.parse(request.responseText);
         sites = normalizeSites(config);
+        configureYouTubeKeepAlive(config);
         emptyState.hidden = sites.length > 0;
         showSite(0);
       } catch (error) {

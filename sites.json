@@ -1,4 +1,7 @@
 {
+  "keepAlive": {
+    "youtubeUrl": "https://www.youtube.com/watch?v=wid7PEVrgRU&list=RDwid7PEVrgRU&start_radio=1"
+  },
   "sites": [
     {
       "name": "Grafana Confia",
