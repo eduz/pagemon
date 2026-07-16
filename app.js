@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  var DEFAULT_DURATION_SECONDS = 60;
+  var DEFAULT_DURATION_SECONDS = 300;
   var CONFIG_FILE = "sites.json";
   var sites = [];
   var currentIndex = 0;
@@ -84,9 +84,23 @@
       timer.textContent = secondsLeft + "s";
 
       if (secondsLeft <= 0) {
-        showSite(currentIndex + 1);
+        showNextSite();
       }
     }, 1000);
+  }
+
+  function showNextSite() {
+    if (!sites.length) {
+      showEmptyState();
+      return;
+    }
+
+    if (currentIndex >= sites.length - 1) {
+      window.location.reload();
+      return;
+    }
+
+    showSite(currentIndex + 1);
   }
 
   function showSite(index) {
@@ -194,7 +208,7 @@
 
   nextButton.addEventListener("click", function () {
     startKeepAliveAudio();
-    showSite(currentIndex + 1);
+    showNextSite();
   });
 
   document.addEventListener("keydown", function (event) {
@@ -205,7 +219,7 @@
     }
 
     if (event.key === "ArrowRight" || event.key === "Enter") {
-      showSite(currentIndex + 1);
+      showNextSite();
     }
   });
 

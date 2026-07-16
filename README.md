@@ -24,7 +24,7 @@ Edite `sites.json`:
 }
 ```
 
-`durationSeconds` e opcional. Se nao for informado, o tempo padrao e 60 segundos.
+`durationSeconds` e opcional. Se nao for informado, o tempo padrao e 300 segundos.
 Use `"embed": false` quando o site bloquear exibicao dentro de `iframe`.
 
 ## Como executar
