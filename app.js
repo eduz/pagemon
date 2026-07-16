@@ -21,6 +21,23 @@
   var timer = document.getElementById("timer");
   var previousButton = document.getElementById("previousButton");
   var nextButton = document.getElementById("nextButton");
+  var keepAliveAudio = document.getElementById("keepAliveAudio");
+
+  function startKeepAliveAudio() {
+    if (!keepAliveAudio || typeof keepAliveAudio.play !== "function") {
+      return;
+    }
+
+    keepAliveAudio.volume = 1;
+
+    var playRequest = keepAliveAudio.play();
+
+    if (playRequest && typeof playRequest.catch === "function") {
+      playRequest.catch(function () {
+        // Some TV browsers only allow playback after a remote-control interaction.
+      });
+    }
+  }
 
   function normalizeSites(config) {
     var list = Array.isArray(config) ? config : config.sites;
@@ -171,14 +188,18 @@
   });
 
   previousButton.addEventListener("click", function () {
+    startKeepAliveAudio();
     showSite(currentIndex - 1);
   });
 
   nextButton.addEventListener("click", function () {
+    startKeepAliveAudio();
     showSite(currentIndex + 1);
   });
 
   document.addEventListener("keydown", function (event) {
+    startKeepAliveAudio();
+
     if (event.key === "ArrowLeft") {
       showSite(currentIndex - 1);
     }
@@ -188,5 +209,9 @@
     }
   });
 
+  document.addEventListener("pointerdown", startKeepAliveAudio);
+  document.addEventListener("touchstart", startKeepAliveAudio);
+
+  startKeepAliveAudio();
   loadConfig();
 }());

@@ -47,6 +47,24 @@ Abrir o arquivo `index.html` diretamente pode impedir o carregamento de `sites.j
 
 Alguns sites bloqueiam exibicao dentro de `iframe` por configuracoes como `X-Frame-Options` ou `Content-Security-Policy`. Quando isso acontecer, a pagina precisa liberar embed ou ser monitorada por uma URL alternativa propria para TV.
 
+## Audio silencioso para TV
+
+O monitor ja inclui um MP3 silencioso curto em loop para tentar manter a TV com midia ativa:
+
+```text
+https://eduz.github.io/pagemon/assets/silent.mp3
+```
+
+Ele fica embutido na propria aplicacao:
+
+```html
+<audio autoplay loop id="keepAliveAudio">
+  <source src="https://eduz.github.io/pagemon/assets/silent.mp3" type="audio/mpeg">
+</audio>
+```
+
+Se o navegador da TV bloquear autoplay, tente iniciar a pagina uma vez com interacao do controle remoto.
+
 ## Publicar no GitHub Pages
 
 1. Crie um repositorio vazio no GitHub.
