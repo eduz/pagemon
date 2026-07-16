@@ -30,6 +30,17 @@ iframe {
   font: inherit;
 }
 
+#keepAliveAudio,
+#keepAliveVideo {
+  position: fixed;
+  left: -20px;
+  top: -20px;
+  width: 1px;
+  height: 1px;
+  opacity: 0.01;
+  pointer-events: none;
+}
+
 .screen {
   position: relative;
   width: 100vw;

@@ -22,21 +22,46 @@
   var previousButton = document.getElementById("previousButton");
   var nextButton = document.getElementById("nextButton");
   var keepAliveAudio = document.getElementById("keepAliveAudio");
+  var keepAliveVideo = document.getElementById("keepAliveVideo");
+  var wakeLock = null;
 
-  function startKeepAliveAudio() {
-    if (!keepAliveAudio || typeof keepAliveAudio.play !== "function") {
+  function playMediaElement(element, volume) {
+    if (!element || typeof element.play !== "function") {
       return;
     }
 
-    keepAliveAudio.volume = 1;
+    if (typeof volume === "number" && "volume" in element) {
+      element.volume = volume;
+    }
 
-    var playRequest = keepAliveAudio.play();
+    var playRequest = element.play();
 
     if (playRequest && typeof playRequest.catch === "function") {
       playRequest.catch(function () {
         // Some TV browsers only allow playback after a remote-control interaction.
       });
     }
+  }
+
+  function requestWakeLock() {
+    if (!navigator.wakeLock || typeof navigator.wakeLock.request !== "function") {
+      return;
+    }
+
+    navigator.wakeLock.request("screen").then(function (lock) {
+      wakeLock = lock;
+      wakeLock.addEventListener("release", function () {
+        wakeLock = null;
+      });
+    }).catch(function () {
+      wakeLock = null;
+    });
+  }
+
+  function startKeepAlive() {
+    requestWakeLock();
+    playMediaElement(keepAliveAudio, 1);
+    playMediaElement(keepAliveVideo, 0);
   }
 
   function normalizeSites(config) {
@@ -202,17 +227,17 @@
   });
 
   previousButton.addEventListener("click", function () {
-    startKeepAliveAudio();
+    startKeepAlive();
     showSite(currentIndex - 1);
   });
 
   nextButton.addEventListener("click", function () {
-    startKeepAliveAudio();
+    startKeepAlive();
     showNextSite();
   });
 
   document.addEventListener("keydown", function (event) {
-    startKeepAliveAudio();
+    startKeepAlive();
 
     if (event.key === "ArrowLeft") {
       showSite(currentIndex - 1);
@@ -223,9 +248,14 @@
     }
   });
 
-  document.addEventListener("pointerdown", startKeepAliveAudio);
-  document.addEventListener("touchstart", startKeepAliveAudio);
+  document.addEventListener("pointerdown", startKeepAlive);
+  document.addEventListener("touchstart", startKeepAlive);
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState === "visible") {
+      startKeepAlive();
+    }
+  });
 
-  startKeepAliveAudio();
+  startKeepAlive();
   loadConfig();
 }());

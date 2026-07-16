@@ -47,23 +47,34 @@ Abrir o arquivo `index.html` diretamente pode impedir o carregamento de `sites.j
 
 Alguns sites bloqueiam exibicao dentro de `iframe` por configuracoes como `X-Frame-Options` ou `Content-Security-Policy`. Quando isso acontecer, a pagina precisa liberar embed ou ser monitorada por uma URL alternativa propria para TV.
 
-## Audio silencioso para TV
+## Keep-alive para TV
 
-O monitor ja inclui um MP3 silencioso curto em loop para tentar manter a TV com midia ativa:
+O monitor tenta manter a TV ativa com tres tecnicas:
+
+- `Screen Wake Lock API`, quando o navegador suporta.
+- MP3 silencioso curto em loop.
+- Video MP4 preto e minúsculo em loop.
+
+Arquivos publicados junto com o projeto:
 
 ```text
 https://eduz.github.io/pagemon/assets/silent.mp3
+https://eduz.github.io/pagemon/assets/keepalive.mp4
 ```
 
-Ele fica embutido na propria aplicacao:
+Eles ficam embutidos na propria aplicacao:
 
 ```html
-<audio autoplay loop id="keepAliveAudio">
+<audio id="keepAliveAudio" autoplay loop preload="auto">
   <source src="https://eduz.github.io/pagemon/assets/silent.mp3" type="audio/mpeg">
 </audio>
+
+<video id="keepAliveVideo" autoplay loop muted playsinline preload="auto">
+  <source src="https://eduz.github.io/pagemon/assets/keepalive.mp4" type="video/mp4">
+</video>
 ```
 
-Se o navegador da TV bloquear autoplay, tente iniciar a pagina uma vez com interacao do controle remoto.
+Se o navegador da TV bloquear autoplay, tente iniciar a pagina uma vez com interacao do controle remoto. Alguns modelos de TV ainda podem ignorar essas tecnicas no navegador comum; nesse caso, a solucao confiavel e ajustar as configuracoes da TV ou usar um app/kiosk dedicado.
 
 ## Publicar no GitHub Pages
 
