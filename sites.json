@@ -1,14 +1,8 @@
 {
   "sites": [
     {
-      "name": "Apps Confia",
-      "url": "https://kuma.ops.confia.net.br/status/apps",
-      "durationSeconds": 60
-    },
-    {
-      "name": "ONRCPN",
-      "url": "https://status.registrocivil.org.br/status/onrcpn",
-      "embed": false,
+      "name": "Grafana Confia",
+      "url": "https://grafana.ops.confia.net.br/public-dashboards/0f0ed3c10535415bbb7adc821d32a9d6",
       "durationSeconds": 60
     }
   ]
