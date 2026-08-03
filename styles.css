@@ -31,8 +31,7 @@ iframe {
 }
 
 #keepAliveAudio,
-#keepAliveVideo,
-#youtubeKeepAliveFrame {
+#keepAliveVideo {
   position: fixed;
   left: -20px;
   top: -20px;
@@ -41,6 +40,20 @@ iframe {
   border: 0;
   opacity: 0.01;
   pointer-events: none;
+}
+
+#youtubeKeepAliveFrame {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 30;
+  width: min(34vw, 460px);
+  aspect-ratio: 16 / 9;
+  height: auto;
+  border: 2px solid rgba(255, 255, 255, 0.72);
+  border-radius: 8px;
+  background: #000000;
+  box-shadow: 0 18px 70px rgba(0, 0, 0, 0.48);
 }
 
 #youtubeKeepAliveFrame.is-disabled {

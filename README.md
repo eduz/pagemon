@@ -80,13 +80,15 @@ Para trocar o video do YouTube usado como keep-alive, edite `sites.json`:
 ```json
 {
   "keepAlive": {
-    "youtubeUrl": "https://www.youtube.com/watch?v=wid7PEVrgRU&list=RDwid7PEVrgRU&start_radio=1"
+    "youtubeUrl": "https://www.youtube.com/watch?v=wid7PEVrgRU&list=RDwid7PEVrgRU&start_radio=1",
+    "youtubeMuted": false,
+    "youtubeControls": true
   },
   "sites": []
 }
 ```
 
-Se o navegador da TV bloquear autoplay, tente iniciar a pagina uma vez com interacao do controle remoto. Alguns modelos de TV ainda podem ignorar essas tecnicas no navegador comum; nesse caso, a solucao confiavel e ajustar as configuracoes da TV ou usar um app/kiosk dedicado.
+Nesta versao de teste, o player do YouTube fica visivel no canto superior direito para confirmar se o video realmente esta tocando. Se o navegador da TV bloquear autoplay, use os controles do player com o controle remoto. Alguns modelos de TV ainda podem ignorar essas tecnicas no navegador comum; nesse caso, a solucao confiavel e ajustar as configuracoes da TV ou usar um app/kiosk dedicado.
 
 ## Publicar no GitHub Pages
 

@@ -42,8 +42,9 @@
     return url + separator + encodeURIComponent(key) + "=" + encodeURIComponent(value);
   }
 
-  function buildYouTubeEmbedUrl(url) {
+  function buildYouTubeEmbedUrl(url, options) {
     var videoId = getYouTubeVideoId(url);
+    var keepAliveOptions = options || {};
     var embedUrl = String(url || "").trim();
 
     if (!embedUrl) {
@@ -55,9 +56,9 @@
     }
 
     embedUrl = addUrlParameter(embedUrl, "autoplay", "1");
-    embedUrl = addUrlParameter(embedUrl, "mute", "1");
+    embedUrl = addUrlParameter(embedUrl, "mute", keepAliveOptions.youtubeMuted === false ? "0" : "1");
     embedUrl = addUrlParameter(embedUrl, "loop", "1");
-    embedUrl = addUrlParameter(embedUrl, "controls", "0");
+    embedUrl = addUrlParameter(embedUrl, "controls", keepAliveOptions.youtubeControls === false ? "0" : "1");
     embedUrl = addUrlParameter(embedUrl, "playsinline", "1");
     embedUrl = addUrlParameter(embedUrl, "disablekb", "1");
     embedUrl = addUrlParameter(embedUrl, "modestbranding", "1");
@@ -71,7 +72,7 @@
 
   function configureYouTubeKeepAlive(config) {
     var keepAlive = config && config.keepAlive ? config.keepAlive : {};
-    var embedUrl = buildYouTubeEmbedUrl(keepAlive.youtubeUrl || keepAlive.youtubeEmbedUrl || "");
+    var embedUrl = buildYouTubeEmbedUrl(keepAlive.youtubeUrl || keepAlive.youtubeEmbedUrl || "", keepAlive);
 
     if (!youtubeKeepAliveFrame || !embedUrl) {
       if (youtubeKeepAliveFrame) {
