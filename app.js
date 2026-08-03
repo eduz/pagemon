@@ -24,6 +24,14 @@
   var keepAliveAudio = document.getElementById("keepAliveAudio");
   var keepAliveVideo = document.getElementById("keepAliveVideo");
   var youtubeKeepAliveFrame = document.getElementById("youtubeKeepAliveFrame");
+  var githubDot = document.getElementById("githubDot");
+  var githubStatus = document.getElementById("githubStatus");
+  var githubDetail = document.getElementById("githubDetail");
+  var githubUpdated = document.getElementById("githubUpdated");
+  var awsDot = document.getElementById("awsDot");
+  var awsSaEast = document.getElementById("awsSaEast");
+  var awsUsEast = document.getElementById("awsUsEast");
+  var awsUpdated = document.getElementById("awsUpdated");
   var wakeLock = null;
 
   function getYouTubeVideoId(url) {
@@ -127,6 +135,187 @@
     requestWakeLock();
     playMediaElement(keepAliveAudio, 1);
     playMediaElement(keepAliveVideo, 0);
+  }
+
+  function requestJson(url, onSuccess, onError) {
+    var request = new XMLHttpRequest();
+    request.open("GET", url, true);
+    request.timeout = 8000;
+
+    request.onreadystatechange = function () {
+      if (request.readyState !== 4) {
+        return;
+      }
+
+      if (request.status < 200 || request.status >= 300) {
+        onError();
+        return;
+      }
+
+      try {
+        onSuccess(JSON.parse(request.responseText.replace(/^\uFEFF/, "").replace(/\u0000/g, "")));
+      } catch (error) {
+        onError();
+      }
+    };
+
+    request.onerror = onError;
+    request.ontimeout = onError;
+    request.send();
+  }
+
+  function formatUpdatedAt(value) {
+    if (!value) {
+      return "--";
+    }
+
+    var date = new Date(value);
+
+    if (isNaN(date.getTime())) {
+      return "--";
+    }
+
+    return date.toLocaleTimeString("pt-BR", {
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+  }
+
+  function setDotState(dot, state) {
+    if (!dot) {
+      return;
+    }
+
+    dot.className = "status-dot is-" + state;
+  }
+
+  function updateGithubStatus() {
+    requestJson("https://www.githubstatus.com/api/v2/status.json?ts=" + Date.now(), function (data) {
+      var indicator = data.status && data.status.indicator ? data.status.indicator : "none";
+      var state = indicator === "none" ? "ok" : indicator === "minor" ? "warn" : "bad";
+
+      setDotState(githubDot, state);
+      githubStatus.textContent = data.status && data.status.description ? data.status.description : "Operational";
+      githubDetail.textContent = "githubstatus.com";
+      githubUpdated.textContent = "Atualizado " + formatUpdatedAt(data.page && data.page.updated_at);
+    }, function () {
+      setDotState(githubDot, "warn");
+      githubStatus.textContent = "Indisponivel";
+      githubDetail.textContent = "Nao foi possivel consultar o status.";
+      githubUpdated.textContent = "Atualizado --";
+    });
+  }
+
+  function getAwsRegionEvents(events, region) {
+    return events.filter(function (event) {
+      var arn = String(event.arn || "");
+      var service = String(event.service || "");
+      var serviceStatus = Array.isArray(event.service_status) ? event.service_status : [];
+
+      return arn.indexOf(":health:" + region + ":") !== -1 ||
+        service.indexOf("-" + region) !== -1 ||
+        serviceStatus.some(function (item) {
+          return String(item.service || "").indexOf("-" + region) !== -1;
+        });
+    });
+  }
+
+  function getAwsEventState(event) {
+    var status = Number(event.status || event.current_status || 0);
+
+    if (status >= 3) {
+      return "bad";
+    }
+
+    if (status >= 1) {
+      return "warn";
+    }
+
+    return "ok";
+  }
+
+  function updateAwsRegion(row, region, label, events) {
+    var regionEvents = getAwsRegionEvents(events, region);
+    var worstState = "ok";
+    var detail = label;
+    var title = "Operational";
+
+    regionEvents.forEach(function (event) {
+      var state = getAwsEventState(event);
+
+      if (state === "bad") {
+        worstState = "bad";
+      } else if (state === "warn" && worstState !== "bad") {
+        worstState = "warn";
+      }
+    });
+
+    if (regionEvents.length) {
+      title = regionEvents.length + " evento(s)";
+      detail = regionEvents[0].summary || regionEvents[0].service_name || label;
+    }
+
+    row.className = "region-row is-" + worstState;
+    row.querySelector("strong").textContent = title;
+    row.querySelector("p").textContent = detail;
+
+    return worstState;
+  }
+
+  function updateAwsStatusFromEvents(events) {
+    var saState = updateAwsRegion(awsSaEast, "sa-east-1", "Sao Paulo", events);
+    var usState = updateAwsRegion(awsUsEast, "us-east-1", "N. Virginia", events);
+    var state = saState === "bad" || usState === "bad" ? "bad" : saState === "warn" || usState === "warn" ? "warn" : "ok";
+
+    setDotState(awsDot, state);
+    awsUpdated.textContent = "Atualizado " + formatUpdatedAt(new Date());
+  }
+
+  function updateAwsStatusFromSummary(data) {
+    var states = [];
+
+    (data.regions || []).forEach(function (region) {
+      var row = region.code === "sa-east-1" ? awsSaEast : region.code === "us-east-1" ? awsUsEast : null;
+
+      if (!row) {
+        return;
+      }
+
+      row.className = "region-row is-" + region.state;
+      row.querySelector("strong").textContent = region.title;
+      row.querySelector("p").textContent = region.detail;
+      states.push(region.state);
+    });
+
+    var state = states.indexOf("bad") !== -1 ? "bad" : states.indexOf("warn") !== -1 ? "warn" : "ok";
+    setDotState(awsDot, state);
+    awsUpdated.textContent = "Atualizado " + formatUpdatedAt(data.updatedAt);
+  }
+
+  function updateAwsStatus() {
+    var url = "https://health.aws.amazon.com/public/currentevents?ts=" + Date.now();
+    var proxyUrl = "https://api.allorigins.win/raw?url=" + encodeURIComponent(url);
+
+    requestJson("aws-regions.json?ts=" + Date.now(), updateAwsStatusFromSummary, function () {
+      requestJson(url, updateAwsStatusFromEvents, function () {
+        requestJson(proxyUrl, updateAwsStatusFromEvents, function () {
+          setDotState(awsDot, "warn");
+          [awsSaEast, awsUsEast].forEach(function (row) {
+            row.className = "region-row is-warn";
+            row.querySelector("strong").textContent = "Indisponivel";
+            row.querySelector("p").textContent = "Nao foi possivel consultar AWS Health.";
+          });
+          awsUpdated.textContent = "Atualizado --";
+        });
+      });
+    });
+  }
+
+  function startExternalStatusUpdates() {
+    updateGithubStatus();
+    updateAwsStatus();
+    window.setInterval(updateGithubStatus, 60000);
+    window.setInterval(updateAwsStatus, 60000);
   }
 
   function normalizeSites(config) {
@@ -323,5 +512,6 @@
   });
 
   startKeepAlive();
+  startExternalStatusUpdates();
   loadConfig();
 }());

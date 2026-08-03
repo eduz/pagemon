@@ -9,47 +9,91 @@
   </head>
   <body>
     <main class="screen">
-      <section class="viewer" aria-label="Monitor de paginas">
-        <iframe
-          id="siteFrame"
-          title="Pagina monitorada"
-          referrerpolicy="no-referrer"
-          sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts">
-        </iframe>
+      <section class="monitor-column">
+        <section class="viewer" aria-label="Monitor de paginas">
+          <iframe
+            id="siteFrame"
+            title="Pagina monitorada"
+            referrerpolicy="no-referrer"
+            sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts">
+          </iframe>
 
-        <div class="loading" id="loading" aria-live="polite">
-          <span class="spinner" aria-hidden="true"></span>
-          <span id="loadingText">Carregando</span>
-        </div>
+          <div class="loading" id="loading" aria-live="polite">
+            <span class="spinner" aria-hidden="true"></span>
+            <span id="loadingText">Carregando</span>
+          </div>
 
-        <div class="empty-state" id="emptyState" hidden>
-          <h1>Nenhum site configurado</h1>
-          <p>Edite o arquivo sites.json para iniciar o monitoramento.</p>
-        </div>
+          <div class="empty-state" id="emptyState" hidden>
+            <h1>Nenhum site configurado</h1>
+            <p>Edite o arquivo sites.json para iniciar o monitoramento.</p>
+          </div>
 
-        <div class="blocked-state" id="blockedState" hidden>
-          <h1>Pagina bloqueia iframe</h1>
-          <p id="blockedUrl">Esta pagina nao permite exibicao fora do proprio dominio.</p>
-        </div>
+          <div class="blocked-state" id="blockedState" hidden>
+            <h1>Pagina bloqueia iframe</h1>
+            <p id="blockedUrl">Esta pagina nao permite exibicao fora do proprio dominio.</p>
+          </div>
+        </section>
+
+        <aside class="statusbar" aria-label="Status da rotacao">
+          <div class="service">
+            <strong id="siteName">TV Monitor</strong>
+            <span id="siteUrl">Aguardando sites.json</span>
+          </div>
+
+          <div class="rotation">
+            <span id="counter">0/0</span>
+            <span class="dot" aria-hidden="true"></span>
+            <span id="timer">300s</span>
+            <button type="button" id="previousButton" aria-label="Site anterior" title="Site anterior">
+              <span aria-hidden="true">‹</span>
+            </button>
+            <button type="button" id="nextButton" aria-label="Proximo site" title="Proximo site">
+              <span aria-hidden="true">›</span>
+            </button>
+          </div>
+        </aside>
       </section>
 
-      <aside class="statusbar" aria-label="Status da rotacao">
-        <div class="service">
-          <strong id="siteName">TV Monitor</strong>
-          <span id="siteUrl">Aguardando sites.json</span>
-        </div>
+      <aside class="side-column" aria-label="Status externos">
+        <section class="side-panel video-panel" aria-label="Video">
+          <iframe
+            id="youtubeKeepAliveFrame"
+            title="YouTube keep-alive"
+            allow="autoplay; encrypted-media; picture-in-picture"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen>
+          </iframe>
+        </section>
 
-        <div class="rotation">
-          <span id="counter">0/0</span>
-          <span class="dot" aria-hidden="true"></span>
-          <span id="timer">300s</span>
-          <button type="button" id="previousButton" aria-label="Site anterior" title="Site anterior">
-            <span aria-hidden="true">‹</span>
-          </button>
-          <button type="button" id="nextButton" aria-label="Proximo site" title="Proximo site">
-            <span aria-hidden="true">›</span>
-          </button>
-        </div>
+        <section class="side-panel status-panel" aria-label="GitHub status">
+          <div class="panel-head">
+            <span class="status-dot is-loading" id="githubDot"></span>
+            <h2>GitHub</h2>
+          </div>
+          <strong id="githubStatus">Consultando</strong>
+          <p id="githubDetail">githubstatus.com</p>
+          <span id="githubUpdated">--</span>
+        </section>
+
+        <section class="side-panel status-panel" aria-label="AWS status">
+          <div class="panel-head">
+            <span class="status-dot is-loading" id="awsDot"></span>
+            <h2>AWS</h2>
+          </div>
+          <div class="region-list">
+            <div class="region-row" id="awsSaEast">
+              <span class="region-name">sa-east-1</span>
+              <strong>Consultando</strong>
+              <p>Sao Paulo</p>
+            </div>
+            <div class="region-row" id="awsUsEast">
+              <span class="region-name">us-east-1</span>
+              <strong>Consultando</strong>
+              <p>N. Virginia</p>
+            </div>
+          </div>
+          <span id="awsUpdated">--</span>
+        </section>
       </aside>
     </main>
 
@@ -61,14 +105,6 @@
       <source src="assets/keepalive.mp4" type="video/mp4">
     </video>
 
-    <iframe
-      id="youtubeKeepAliveFrame"
-      title="YouTube keep-alive"
-      allow="autoplay; encrypted-media; picture-in-picture"
-      referrerpolicy="strict-origin-when-cross-origin"
-      allowfullscreen>
-    </iframe>
-
-    <script src="app.js?v=6"></script>
+    <script src="app.js?v=7"></script>
   </body>
 </html>

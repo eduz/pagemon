@@ -90,6 +90,22 @@ Para trocar o video do YouTube usado como keep-alive, edite `sites.json`:
 
 Nesta versao de teste, o player do YouTube fica visivel no canto superior direito para confirmar se o video realmente esta tocando. Se o navegador da TV bloquear autoplay, use os controles do player com o controle remoto. Alguns modelos de TV ainda podem ignorar essas tecnicas no navegador comum; nesse caso, a solucao confiavel e ajustar as configuracoes da TV ou usar um app/kiosk dedicado.
 
+## Painel lateral
+
+A tela e dividida em duas colunas:
+
+- 75% para as paginas monitoradas.
+- 25% para video, GitHub Status e AWS Health.
+
+Fontes usadas:
+
+```text
+https://www.githubstatus.com/api/v2/status.json
+https://health.aws.amazon.com/public/currentevents
+```
+
+O painel AWS filtra eventos atuais das regioes `sa-east-1` e `us-east-1`.
+
 ## Publicar no GitHub Pages
 
 1. Crie um repositorio vazio no GitHub.

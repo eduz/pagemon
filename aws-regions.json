@@ -1,0 +1,20 @@
+{
+  "updatedAt": "2026-08-03T20:57:10.180874+00:00",
+  "source": "https://health.aws.amazon.com/public/currentevents",
+  "regions": [
+    {
+      "code": "sa-east-1",
+      "label": "Sao Paulo",
+      "state": "ok",
+      "title": "Operational",
+      "detail": "Sao Paulo"
+    },
+    {
+      "code": "us-east-1",
+      "label": "N. Virginia",
+      "state": "ok",
+      "title": "Operational",
+      "detail": "N. Virginia"
+    }
+  ]
+}
