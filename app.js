@@ -8,6 +8,7 @@
   var secondsLeft = DEFAULT_DURATION_SECONDS;
   var rotationTimer = null;
   var loadFallbackTimer = null;
+  var isRefreshingConfig = false;
 
   var frame = document.getElementById("siteFrame");
   var loading = document.getElementById("loading");
@@ -353,10 +354,15 @@
     timer.textContent = secondsLeft + "s";
   }
 
-  function startCountdown() {
+  function stopCountdown() {
     if (rotationTimer) {
       window.clearInterval(rotationTimer);
+      rotationTimer = null;
     }
+  }
+
+  function startCountdown() {
+    stopCountdown();
 
     rotationTimer = window.setInterval(function () {
       secondsLeft -= 1;
@@ -375,11 +381,22 @@
     }
 
     if (currentIndex >= sites.length - 1) {
-      window.location.reload();
+      refreshConfig();
       return;
     }
 
     showSite(currentIndex + 1);
+  }
+
+  function refreshConfig() {
+    if (isRefreshingConfig) {
+      return;
+    }
+
+    isRefreshingConfig = true;
+    stopCountdown();
+    setLoading(true, "Atualizando sites.json");
+    loadConfig(true);
   }
 
   function showSite(index) {
@@ -430,8 +447,25 @@
     timer.textContent = "0s";
   }
 
-  function loadConfig() {
-    setLoading(true, "Carregando sites.json");
+  function handleConfigError(message, isRefresh) {
+    isRefreshingConfig = false;
+
+    if (isRefresh && sites.length) {
+      // Mantem a lista atual em vez de apagar o painel numa falha de rede.
+      showSite(0);
+      return;
+    }
+
+    sites = [];
+    showEmptyState();
+    siteName.textContent = "Erro de configuracao";
+    siteUrl.textContent = message;
+  }
+
+  function loadConfig(isRefresh) {
+    if (!isRefresh) {
+      setLoading(true, "Carregando sites.json");
+    }
 
     var request = new XMLHttpRequest();
     request.open("GET", CONFIG_FILE + "?v=" + Date.now(), true);
@@ -442,32 +476,30 @@
       }
 
       if (request.status < 200 || request.status >= 300) {
-        sites = [];
-        showEmptyState();
-        siteName.textContent = "Erro de configuracao";
-        siteUrl.textContent = "Nao foi possivel carregar " + CONFIG_FILE;
+        handleConfigError("Nao foi possivel carregar " + CONFIG_FILE, isRefresh);
         return;
       }
 
       try {
         var config = JSON.parse(request.responseText);
         sites = normalizeSites(config);
-        configureYouTubeKeepAlive(config);
+
+        // O video do YouTube e configurado so na carga inicial: refazer o src a
+        // cada volta do rodizio reiniciaria o video.
+        if (!isRefresh) {
+          configureYouTubeKeepAlive(config);
+        }
+
+        isRefreshingConfig = false;
         emptyState.hidden = sites.length > 0;
         showSite(0);
       } catch (error) {
-        sites = [];
-        showEmptyState();
-        siteName.textContent = "Erro de configuracao";
-        siteUrl.textContent = "JSON invalido em " + CONFIG_FILE;
+        handleConfigError("JSON invalido em " + CONFIG_FILE, isRefresh);
       }
     };
 
     request.onerror = function () {
-      sites = [];
-      showEmptyState();
-      siteName.textContent = "Erro de configuracao";
-      siteUrl.textContent = "Nao foi possivel carregar " + CONFIG_FILE;
+      handleConfigError("Nao foi possivel carregar " + CONFIG_FILE, isRefresh);
     };
 
     request.send();
