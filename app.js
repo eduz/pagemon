@@ -36,7 +36,7 @@
   var wakeLock = null;
 
   function getYouTubeVideoId(url) {
-    var match = String(url || "").match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([^?&/]+)/);
+    var match = String(url || "").match(/(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:watch\?v=|embed\/|shorts\/))([^?&/]+)/);
     return match ? match[1] : "";
   }
 
@@ -60,8 +60,10 @@
       return "";
     }
 
-    if (videoId && embedUrl.indexOf("/embed/") === -1) {
-      embedUrl = "https://www.youtube.com/embed/" + videoId;
+    // Dominio de privacidade do proprio YouTube: costuma servir menos anuncios
+    // que o embed padrao. URLs de outros players (Invidious etc) passam direto.
+    if (videoId) {
+      embedUrl = "https://www.youtube-nocookie.com/embed/" + videoId;
     }
 
     embedUrl = addUrlParameter(embedUrl, "autoplay", "1");
