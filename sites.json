@@ -2,7 +2,8 @@
   "keepAlive": {
     "youtubeUrl": "https://www.youtube.com/watch?v=wid7PEVrgRU&list=RDwid7PEVrgRU&start_radio=1",
     "youtubeMuted": false,
-    "youtubeControls": true
+    "youtubeControls": true,
+    "youtubeProxy": "yout-ube.com"
   },
   "sites": [
     {

@@ -60,6 +60,12 @@
       return "";
     }
 
+    // Passagem por servico externo (ex: yout-ube.com). Ele monta o proprio embed
+    // nocookie, entao os parametros abaixo nao se aplicam e a URL sai pronta.
+    if (videoId && keepAliveOptions.youtubeProxy) {
+      return "https://www." + String(keepAliveOptions.youtubeProxy).replace(/^https?:\/\/(www\.)?/, "").replace(/\/+$/, "") + "/watch?v=" + videoId;
+    }
+
     // Dominio de privacidade do proprio YouTube: costuma servir menos anuncios
     // que o embed padrao. URLs de outros players (Invidious etc) passam direto.
     if (videoId) {
