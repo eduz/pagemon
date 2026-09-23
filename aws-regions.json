@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-22T22:46:26.488146+00:00",
+  "updatedAt": "2026-09-23T01:17:41.274195+00:00",
   "source": "https://health.aws.amazon.com/public/currentevents",
   "regions": [
     {
@@ -13,8 +13,8 @@
       "code": "us-east-1",
       "label": "N. Virginia",
       "state": "ok",
-      "title": "1 evento(s)",
-      "detail": "[RESOLVED] Increased Error Rates"
+      "title": "Operational",
+      "detail": "N. Virginia"
     }
   ]
 }
