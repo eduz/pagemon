@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-16T07:05:16.289625+00:00",
+  "updatedAt": "2026-11-16T17:01:25.971822+00:00",
   "source": "https://health.aws.amazon.com/public/currentevents",
   "regions": [
     {
@@ -13,8 +13,8 @@
       "code": "us-east-1",
       "label": "N. Virginia",
       "state": "ok",
-      "title": "1 evento(s)",
-      "detail": "[RESOLVED] Increased Connectivity issues in US-EAST-1"
+      "title": "Operational",
+      "detail": "N. Virginia"
     }
   ]
 }
